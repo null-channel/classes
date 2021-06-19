@@ -2,4 +2,22 @@
 
 Ok, so to follow along we are going to do a lot of experimenting and I think its really important to get a local kubernetes cluster you can play around. That being said I will be providing labs for a lot of it, some of them will be online in your web browser and not require any of this, but there will be some that have extention objectives that can be done on your local clusters as they provide more flexability.
 
-Ok, so i'm going to give you the steps here for local kubernetes clusters on linux but will link ot some awesome tutorials to bing kubernetes to mac and windows. though you could follow these instructions on windows subsystem for linux.
+Another one that you can use is docker, docker desktop will enable to you run a local kubernetes cluster on both windows and mac directly from docker and if you are on those platforms is an excelent way to get a local kubernetes cluster. If you are on linux there are some other tools that provide an even better solutions as you can have multiple local clusters and tear down and stand up a new cluster even easier. These tools can be used inside windows WSL but requires a little extra work if you are going down that path.
+
+Some of the main local, development and testing cluster technology is:
+minikube,
+kind https://kind.sigs.k8s.io/
+and
+microk8s
+
+So i'm going to drop links to these different technologies and you should find the latest install instructions. As these sometimes change i'm going to avoid putting them in the video but instead I thought maybe I would just go over some of my understandings of the projects and let you know what one I like using the most.
+
+All three of the projects you just can't go wrong with, they all work and supply you with the tools needed. That being said if you are on a ubuntu based machine or already have `snap` installed `microk8s` is by far the easiest to install as it is just `sudo snap install microk8s --classic` and you have a cluster only a minute later. Now this is easy and it's powerful and there are a few times I defenetly use and recommend it, but for this class it's not my first recomendation as it does not let for as much experimenting and does not let you have multiple clusters running at the same time on the same PC.
+
+minikube and kind are kind of a toss up. minikube is more powerful, kind is faster and easier. I find that I use kind about 75 percent of the time and just fall back on minikube when kind is not doing what I want or I want a little more control for some reason. Because of this I thought I would show you how to install and get your first cluster running with kind.
+
+first ensure you have go 1.11 or greater installed, bassically you need a version of go with go module support. then all you need to do is run `GO111MODULE="on" go get sigs.k8s.io/kind@v0.11.1` and update that comand with the latest release of kind. If you have go's bin in your path you can now start using kind!
+
+One thing I love about kind is it make creating a cluster just 3 words.
+
+`kind create cluster` is all you need and it will even update your `kubeconfig` with the ability to access and use this cluster! to it now!
