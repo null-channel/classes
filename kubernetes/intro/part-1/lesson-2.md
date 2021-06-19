@@ -20,4 +20,4 @@ Kubectl, it comes under many names, kubeCTL, kubecuttle or the kubernetes cli. t
 
 CRDs are custom resource definitions, these let you implement your own kubernetes object like the ones mentioned above. This is a much more advanced topic and will not be covered more in depth till much later on. But I wanted to make sure you knew what this term was in case you heard it thrown around.
 
-Ok, so those are 
+Ok, so those are some of the basic resources you can interact with in kubernetes. there are many many more but these are the basic ones you will learn about in this class, understand that all of these resources can and do have their state described in yaml or json files and all of these resources are used to deploy, manage, scale, secure and serve your application!

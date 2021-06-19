@@ -22,6 +22,12 @@ What is horizontal scaling? It’s when you scale by adding more servers, not by
 
 ## What Kubernetes Is Not
 
+I want to start this class with brefly talking about what kubernetes is not. While I will go over this in more detail when approprite I think a lot of people get confused. Kubernetes is a scheduler, one mainly focused on containers. Now while it uses inmutable infrastructure for it's pods/containers this does not mean that it itself manages your infrastructure. The fact is, you are just starting your infrastructure pain when you start using kubernetes. Kubernetes itself is just a group of services that run on a cluster of machines. maintainign and securing those machines as well as ensuring kubernetes itself is up to date and patched.
 
+Kubernetes is NOT for everyone. If your application is a monolith, if your application is does not scale horizontally or if you have a small team that does not want or need the added complexity, kubernetes is not for you.
+
+If you think kubernetes solves your "milti cloud" or "observability" issues. it does not.
+
+The only problem kubernetes solves, and the one it does well. is the ability to scedule pods/containers. Now there are projects out there like harvestor to make an HCL out of it, but you must understand that these are projects built out ON TOP OF. and mostly these are applications that use the control plane to be highly avalible and offer a HA service that does these things. Kubernetes itself does not do this.
 
 ## Technical discription of kubernetes
