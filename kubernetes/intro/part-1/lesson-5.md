@@ -1,7 +1,7 @@
 # kubectl - basics
-Ok, we have a local cluster now, but we want to interact with it. We want to do things with it. The main tool we are going to be using is kubectl. 
+In the last lesson we created a local cluster; but now we want to interact with it. We want to do things with it. The main tool we are going to be using is kubectl. 
 
-Now, there are many tools that you can use, some bringing a graphical interface and others just give you a different way of interacting with clusters or bring the ability to interact with multiple clusters. But as kubectl is the tool used for the kubernetes exams, I'll be sticking to it as the CKA and CKAD exams really test your ability to quickly use the kubectl command line.
+There are many tools that you can use, some bringing a graphical interface and others just give you a different way of interacting with clusters or bring the ability to interact with multiple clusters. But as kubectl is the tool used for the kubernetes exams, I'll be sticking to it as the CKA and CKAD exams really test your ability to quickly use the kubectl command line. But not only that it is probably the most prevelent tool out there.
 
 Ok, so we installed kubectl in the last lesson, if you missed that go back to it and it will help you get that installed.
 

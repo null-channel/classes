@@ -1,4 +1,4 @@
-# Pods, Deployments and Replica Sets
+# Pods
 
 We ran a pod, and a deployment... Now lets understand a little more about them and what they are and what problems they solve.
 

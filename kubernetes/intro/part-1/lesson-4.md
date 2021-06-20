@@ -4,7 +4,9 @@ Ok, so to follow along we are going to do a lot of experimenting and I think its
 
 Another one that you can use is docker, docker desktop will enable to you run a local kubernetes cluster on both windows and mac directly from docker and if you are on those platforms is an excelent way to get a local kubernetes cluster. If you are on linux there are some other tools that provide an even better solutions as you can have multiple local clusters and tear down and stand up a new cluster even easier. These tools can be used inside windows WSL but requires a little extra work if you are going down that path.
 
-Some of the main local, development and testing cluster technology is:
+Before we install a local cluster development tool, first we are going to need kubectl the main tool to interact with the kubernetes api. To do that you can follow the instructions found here https://kubernetes.io/docs/tasks/tools/ You not only get an up to date list on how to install kubectl, but it also has quickstart guides for kind and minikube all in one place! Most linux package managers package kubectl and then in that case it's just as easy as installing kubectl though it.
+
+Some of the main local, development and testing cluster technology are:
 minikube,
 kind https://kind.sigs.k8s.io/
 and
@@ -20,4 +22,6 @@ first ensure you have go 1.11 or greater installed, bassically you need a versio
 
 One thing I love about kind is it make creating a cluster just 3 words.
 
-`kind create cluster` is all you need and it will even update your `kubeconfig` with the ability to access and use this cluster! to it now!
+`kind create cluster` is all you need and it will even update your `kubeconfig` with the ability to access and use this cluster via the kubectl command line! To check that your cluster is up and running you can run the `kubectl get nodes` and you should see a single node with a status of ready! please be aware it can take a few minutes the first time you start up the cluster for the node to become ready!
+
+Ok, And there we have it, a local kubernetes cluster ready to deploy all the pods we can think of! Thanks for joining me, in the next lesson we will cover how to use kubectl to start using kubernetes!
