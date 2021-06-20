@@ -2,7 +2,9 @@
 
 Ok, so to follow along we are going to do a lot of experimenting and I think its really important to get a local kubernetes cluster you can play around. That being said I will be providing labs for a lot of it, some of them will be online in your web browser and not require any of this, but there will be some that have extention objectives that can be done on your local clusters as they provide more flexability.
 
-Another one that you can use is docker, docker desktop will enable to you run a local kubernetes cluster on both windows and mac directly from docker and if you are on those platforms is an excelent way to get a local kubernetes cluster. If you are on linux there are some other tools that provide an even better solutions as you can have multiple local clusters and tear down and stand up a new cluster even easier. These tools can be used inside windows WSL but requires a little extra work if you are going down that path.
+One technology that you can use is docker, docker desktop will enable to you run a local kubernetes cluster on both windows and mac directly from docker and if you are on those platforms is an excelent way to get a local kubernetes cluster. 
+
+If you are on linux there are some other tools that provide an even better solutions as you can have multiple local clusters and tear down and stand up a new cluster even easier. These tools can be used inside windows WSL but requires a little extra work if you are going down that path.
 
 Before we install a local cluster development tool, first we are going to need kubectl the main tool to interact with the kubernetes api. To do that you can follow the instructions found here https://kubernetes.io/docs/tasks/tools/ You not only get an up to date list on how to install kubectl, but it also has quickstart guides for kind and minikube all in one place! Most linux package managers package kubectl and then in that case it's just as easy as installing kubectl though it.
 
