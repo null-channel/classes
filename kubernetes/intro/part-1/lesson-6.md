@@ -2,7 +2,7 @@
 
 We ran a pod, and a deployment... Now lets understand a little more about them and what they are and what problems they solve.
 
-## Pods
+## Pods - high level info
 
 Pods are a collection of tightly coubled containers, I will start this by saying generally I don't think you should run multiple containers inside the same pod, but sometimes it can be useful and we will cover those in just a little bit. But first lets talk about what a pod is.
 
@@ -19,6 +19,8 @@ Pods have five status, Pending, Running, Succeeded, Failed and Unkown.
 Pending means that while the cluster has accepted it, its between scheduling and downloading images.
 Running Succeeded and failed all are self explainitory.
 Unknown means that kubernetes can't determain it's status.
+
+## Pods - Doing the thing
 
 Ok, so lets play around with some pods.
 
