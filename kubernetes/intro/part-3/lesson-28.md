@@ -1,6 +1,7 @@
-# Debugging kubernetes clusters
-Checking kubernetes logs and what logs to check
-Determining if it’s a kubernetes issue
-Debugging etcd
-Certs
-Networking
+# Debugging containers, pods and services
+Kubectl debug
+Logs
+How to figure out why a pod is not running
+Checking scheduling
+Checking kubelet
+Using kubectl for debugging

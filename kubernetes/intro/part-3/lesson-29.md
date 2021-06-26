@@ -1,4 +1,6 @@
-# What Kubernetes is not
-Understand what issues all this can introduce
-How to deal with those problems
-How to understand if its what you need.
+# Debugging kubernetes clusters
+Checking kubernetes logs and what logs to check
+Determining if it’s a kubernetes issue
+Debugging etcd
+Certs
+Networking
