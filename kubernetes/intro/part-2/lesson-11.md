@@ -1,4 +1,7 @@
 Lesson 11: Kubernetes Services - cnt.
+
+Now the third type of service you can create is a LoadBalancer. 
+
 What is a LoadBalancer?
 Creating a LoadBalancer in the cloud or with metalLB
 Overview of ingress controllers and what issue they solve
