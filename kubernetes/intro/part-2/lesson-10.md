@@ -4,10 +4,12 @@ So we have created a deployment back in lesson 7. But how do we expose this outs
 
 There are four types of services you can create, but 
 
+```
 ClusterIP
 NodePort
 LoadBalancer
 EnternalName
+```
 
 Now, I don't want you to worry about all of these, today we are just going to focus on ClusterIP and Nodeport. In the next lesson we will cover loadbalancers and you will learn more about them then you knew you wanted too.
 
