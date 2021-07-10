@@ -1,4 +1,4 @@
- Lesson 16: Persistent Storage - The Storage Class
-What a storage class is
-How it works
-Lab on using a storage class to allocate storage in the cloud
+Lesson 16: Persistent storage - The basics
+How to mount storage into pods
+What is a PV and PVC at a high level
+How to attach storage to a pod

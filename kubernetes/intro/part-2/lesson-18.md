@@ -1,5 +1,6 @@
-Lesson 18: Config Maps and Secrets
-What they are
-How to use them
-Warning about secrets and some technologies (like vault) that can be used to remedy the issues
-Mounting config maps into your containers
+ Lesson 18: Logging and Monitoring Nodes, deployments and pods
+Overview of tools - prometheus , netapp
+Side car concept
+Visualization tools
+Log aggregation 
+Creating a sidecar challenge

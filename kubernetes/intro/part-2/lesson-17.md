@@ -1,6 +1,4 @@
- Lesson 17: Logging and Monitoring Nodes, deployments and pods
-Overview of tools - prometheus , netapp
-Side car concept
-Visualization tools
-Log aggregation 
-Creating a sidecar challenge
+ Lesson 17: Persistent Storage - The Storage Class
+What a storage class is
+How it works
+Lab on using a storage class to allocate storage in the cloud
