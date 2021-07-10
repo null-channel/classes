@@ -1,6 +1,6 @@
 # Why pods are not the answer
 
-So we just spent a lot of time with pods. but as I started the last lesson off with, most of the time, we don't deal with bare pods. So what do we use? Deployments. Think of kubernetes objects that can control other kubernetes objects and layer functionallity. Almost like the unix principle of "do one thing and do it well" each of these "things" are able to focus on one thing. So a pod's focus is on the containers, the resources and the general running of a logical set of processes. So it makes since that there woudl be something that is worried about running pods!
+We just spent a LOT of time with pods. but as I started the last lesson off with, most of the time, we don't deal with bare pods. So what do we use? Deployments. Think of kubernetes objects that can control other kubernetes objects and layer functionallity. Almost like the unix principle of "do one thing and do it well" each of these "things" are able to focus on one thing. So a pod's focus is on the containers, the resources and the general running of a logical set of processes. So it makes since that there woudl be something that is worried about running pods!
 
 ## Deployments
 
@@ -18,7 +18,7 @@ So we can use `kubectl get deployments` to list all our deployments in the defau
 
 If you noticed the replicas was set at one. Hmmmm. lets verify how many are running. we can use `kubectl get pods` and you can see only one is listed. We probably want 3 running just to make sure if one crashes we have another and to handle any increase in load. Lets do that now.
 
-`kubectl scale --replicas=3 deployment/nginx` and now if you run `get pods` you can see more pods getting created in the default namespace and we did not have create or manage any pods by hand, In fact. lets put this to the test, we are going to simulate a failure. We are going to remove a pod that is managed by a deployment. `kubectl delete pod [pod-name]` is all you have to run. so use `kubectl get pods` first to find a name and then go ahead and delete it! so. now we should have 2 pods running right? wait a minute? the deployment has already fixed the issue and we now have 3 pods running still! This is a super useful tool!
+`kubectl scale --replicas=3 deployment/nginx` and now if you run `get pods` you can see more pods getting created in the default namespace and we did not have to create or manage any pods by hand, In fact. lets put this to the test, we are going to simulate a failure. We are going to remove a pod that is managed by a deployment. `kubectl delete pod [pod-name]` is all you have to run. so use `kubectl get pods` first to find a name and then go ahead and delete it! so. now we should have 2 pods running right? wait a minute? the deployment has already fixed the issue and we now have 3 pods running still! This is a super useful tool!
 
 Now, We scaled this by using it's `[type]/[name]` or `deployment/nginx` but you can do this using it's file `-f deployment-nginx`. On top of this scale can be used on pretty much anything that has a replication factor, so think replication controllers or replica sets!
 
