@@ -83,30 +83,32 @@ Lessons marked with +++ have an accompaning katakoda or other lab accompaning th
  - Discovery of some of the different features of different CNI’s 
  - How to install one using kubeadm
 
-### Lesson 15: Persistent storage - The basics +++
+### Lesson 15: NetworkPolicy - basics +++
+
+### Lesson 16: Persistent storage - The basics +++
  - How to mount storage into pods
  - What is a PV and PVC at a high level
  - How to attach storage to a pod
 
-### Lesson 16: Persistent Storage - The Storage Class +++
+### Lesson 17: Persistent Storage - The Storage Class +++
  - What a storage class is
  - How it works
  - Lab on using a storage class to allocate storage in the cloud
 
-### Lesson 17: Logging and Monitoring Nodes, deployments and pods +++
+### Lesson 18: Logging and Monitoring Nodes, deployments and pods +++
  - Overview of tools - prometheus , netapp
  - Side car concept
  - Visualization tools
  - Log aggregation 
  - Creating a sidecar challenge
 
-### Lesson 18: Config Maps and Secrets +++
+### Lesson 19: Config Maps and Secrets +++
  - What they are
  - How to use them
  - Warning about secrets and some technologies (like vault) that can be used to remedy the issues
  - Mounting config maps into your containers
 
-### Lesson 19: Kubectl - Hero mode +++
+### Lesson 20: Kubectl - Hero mode +++
  - How to use it
  - Understanding how it works
  - Show how to describe stuff you don’t understand
@@ -115,58 +117,58 @@ Lessons marked with +++ have an accompaning katakoda or other lab accompaning th
  - Multi cluster support
  - Using it to debug
 
-### Lesson 20: Scheduling +++
+### Lesson 21: Scheduling +++
  - Understanding how the scheduler works
  - Using taints and tollorations to adjust how things deploy
  - Understanding that you can use your own custom scheduler if you want (will not cover how to do this in this class, just that it is possible)
 
 ## Part 3: Kubernetes Architecture, Debugging
 
-### Lesson 21: OCI, kubelet and how kubernetes runs containers
+### Lesson 22: OCI, kubelet and how kubernetes runs containers
 
-### Lesson 22: Kubernetes Architecture - How it works - The control plane
+### Lesson 23: Kubernetes Architecture - How it works - The control plane
  - Api-server
  - Kube scheduler
  - Controller-manager
  - Cloud controller manager
 
-### Lesson 23: Kubernetes Architecture - How it works - the worker nodes +++
+### Lesson 24: Kubernetes Architecture - How it works - the worker nodes +++
  - Kubelet
  - Kube proxy
  - Container runtimes
 
-### Lesson 24: Kubernetes Architecture - How it works - etcd
+### Lesson 25: Kubernetes Architecture - How it works - etcd
  - How and why etcd
  - Can be run outside cluster and if really scaling hard, should be
 
-### Lesson 25: Kubernetes Architecture - How it works - Addons +++
+### Lesson 26: Kubernetes Architecture - How it works - Addons +++
  - Networking: flannel/cilium/calico…..
  - Service Discovery: CoreDNS
  - Visualization: Dashboard/WeaveScope
  - Infrastructure: KubeVirt
 
-### Lesson 26: Kubernetes and VM’s +++
+### Lesson 27: Kubernetes and VM’s +++
 
-### Lesson 27: Debugging containers, pods and services +++
+### Lesson 28: Debugging containers, pods and services +++
  - Kubectl debug
  - Logs
  - How to figure out why a pod is not running
  - Checking scheduling
  - Checking kubelet
 
-### Lesson 28: Debugging kubernetes clusters +++
+### Lesson 29: Debugging kubernetes clusters +++
  - Checking kubernetes logs
  - Determining if it’s a kubernetes issue
  - Debugging etcd
  - Certs
  - Networking
 
-### Lesson 29: What Kubernetes is not 
+### Lesson 30: What Kubernetes is not 
  - Understand what issues it can introduce
  - How to deal with those problems
  - How to understand if its what you need.
 
-### Lesson 30: Wrap up 
+### Lesson 31: Wrap up 
  - Stress the need to understand how to run stuff on kubernetes, it’s best to work with kubernetes and not against it.
  - Wrap up, at a high level how all the components we talked about interact.
  - Talk about future topics they can investigate, like Storage classes, Headless services, and cloud providers
