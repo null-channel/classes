@@ -53,8 +53,16 @@ Ok. now up to this point we have only run a single container! lets fix that.
 
 Run `kubectl apply -f https://github/null-channel/classes/kubernetes/intro/part-1/examples/multi-container.yaml`
 
-How many containers does it have? well this is actually quite easy to tell. just run `kubectl get pods` and here you can see this pod has three out of three pods running.
+How many containers does it have? well this is actually quite easy to tell. just run `kubectl get pods` and here in the ready column you can see this pod has three out of three pods running. You can also run the `describe` command as well as pass `-o yaml` or json to see more information on your running pods. But that is not the only information we could want to get about a given pod, We need logs!
 
-TODO:
-Learn how to get logs from each container in a multi container pod (and single container pods)
-Exec into a container in a multi container POD (and single container pods)
+Getting logs is easy, there is a command built right into kubectl. now. one might think that you type `kubeclt get logs` but one would be wrong in that thought. I still type it every once in a while. The logs command only works for pods, so we don't have to get logs for a pod. All we do is `kubectl logs [podid/name]` Now if you have been following along are are thinking "but there could be a few containers running in that pod, you would be right. If the pod only has one container as it should, you don't have to pass any arguments. But if it has multiple pods you have to pass the `-c` command with the name of the container you are wanting to get. This being said you can pass `--all-containers=true` and get all the logs for a pod.
+
+You can check out all the flags you can pass here, but the most important ones to know about is the `-p` to get the logs of a previously terminated, `--tail` and `--since`. But i'll let you go look into that further!
+
+One last thing, something that is super useful, you can exec into your pods/containers just like you do with the docker command line. Now I'm not going to cover all the flags or options but understand that this works mostly like you might think it would. And how would that be? well you might want to get "in" to your pod and poke around to see what is going on in this isolated container.
+
+`kubectl exec POD -c [container]` now, there are two main ways to run this, ether a single off command with `--` or you can use the flags `-it` and get an interactive terminal inside your pod! Remember if you have multiple containers you need to pass the `-c` flag. otherwise you don't need too!
+
+That is the fastest crash corse on pods, Dont worry if it's does not all make since just yet. It will. That being said, while we don't manage pods directly, it's the building block of everything we are going to be doing so it's important to understand well!
+
+The next lesson we will learn some of the tech that is built up on top of the pod and enabled easy management of them!
