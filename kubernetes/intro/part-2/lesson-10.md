@@ -1,4 +1,4 @@
-Lesson 10: Kubernetes Services
+# Lesson 10: Kubernetes Services
 
 So we have created a deployment back in lesson 7. But how do we expose this outside the cluster? or even inside the cluster to another service? One of the wonderful things about a deployment is that we don't have to worry about where a pod is running, on what machine, or even what it's IP address is. But if we don't know what it's IP address is, how do we access it? This is where the kubernetes resource called "services" comes in.
 

@@ -1,4 +1,4 @@
-Lesson 12: Ingress 
+# Lesson 12: Ingress 
 
 Ok, so services expose, well... services. Right. But most likely if you are looking at kubernets you have a whole fleet of services that all make up your application or infrastructure. This means you are going to probably want to interact with them seamlessly, if we used a loadbalancer for each one not only would our cloud costs sky rocket but we would have a different IP address/domain for each of our services. Now you might want this for some strange reason, like not liking money. But for the most part we are not wanting to have a public IP address for each service. Think of your web app, it might have an accounts service, it might have a live feed service, a service to aggregate logs and a service to provide users with a UI or whatever else your application needs. You might even want to easily and simply get versions of your different api's so that you can easily migrate traffic to newer versions of services while supporting the older versions for a limited amount of time. Thankfully kubernetes gives us a way to do this.
 

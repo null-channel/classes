@@ -1,4 +1,4 @@
-Lesson 11: Kubernetes Services - cnt.
+# Lesson 11: Kubernetes Services - cnt.
 
 Now the third type of service you can create is a LoadBalancer. We are going to cover them a bit here, talk about how they work but then in the end, we are not going to do anything with them as they only really work in the cloud. Now that being said, if you do want to use load balancers and are one that is not worried about taking the path less traveled go ahead and look up a tech called metalLB it's your friend and can provide this same experience on bare metal/vm's.
 

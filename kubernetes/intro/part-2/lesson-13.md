@@ -1,4 +1,4 @@
-Lesson 13: Rolling updates and Rollbacks
+# Lesson 13: Rolling updates and Rollbacks
 
 We have talked a little about how you can update your deployments, Lets make a new deployment of nginx, but this time we are going to do something a little more interesting with it.
 
