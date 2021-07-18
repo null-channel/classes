@@ -14,7 +14,9 @@ Ok. so that is a service of type Load Balancer, they are pretty cool. Lets look 
 
 As you can see here, unlike nodeport and clusterIP the LB services get a "external ip" address that we can use to access our application! This is really cool and super useful in a lot of ways. Lets check this out on a few different clouds!
 
+## In the Video
 
+In the video for this lession, I show off the following cloud providers and a little of what their LB implementations look like and how to interact with them!
 ```
 Show:
 AWS LB
