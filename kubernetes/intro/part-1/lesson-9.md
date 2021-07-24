@@ -1,61 +1,55 @@
-# Jobs and Cronjobs
+# What is a namespace
 
-Lets talk about jobs and cronjobs. First, I want to cover why these might be useful at a high level, because if you are like me when you first heard of these they where a bit confusing as to why you might want or use them in a kubernetes cluster.
+Ok. I bring up namespaces because a lot of the time when you deploy something from a helm chart or the likes it's going to deploy into it's own namespace and it's important to understand how to use them even if you don't actively use them. Namespaces primary use are for environments with larger teams and provide a sort of "soft, trusted multitenancy" they are not the solution to trusted multitenancy but they help with it. So think of a large company with lost of teams that use a single cluster or share lots of clusters. To be honest, if you are running a smaller team there is no need to use namespaces or care about them.
 
-So I think everyone knows what a cronjob is, and in kubernetes that is pretty much the same! Now, just like pods and deployments Cronjobs manage jobs, and jobs manage running pods. So, you could run a pod directly with the `run` command, But you could use a job that would let your run one or more till any number of successful runs and tracks all of this across all the pods running. Meaning you could use a job to spin up 1000 parallel jobs if you want. Jobs also manage the restarting of pods if they exit with a failure. CronJobs then just let you start jobs on a schedule when you want them!
+Lets sum up what namespaces are at a high level, They are the exact same as namespaces in languages like c#, the linux kernel and others. Namespaces provide a scope for names, meaning that names, like your deployment name `nginx` in the last example needs to be unique WITHIN its namespace. And that happened to be the "default" namespace.
 
-Why is this useful? well now you have the power of kubernetes to do the things that usually one machine would be responsible for. and if that machine was offline, your cronjobs would no longer run. Not only this it gives you the ability to run at massive parallelism with ease. Meaning if you wanted to spin up thousands of parrelel jobs when your cluster was not doing much to process some data that was able to be chunked you could. Think of maintenance tasks like archiving data or cleaning up. What if you wanted to run some type of export or auto save every few minutes, think things like this. Ok. Lets create a cronjob!
+Ok. lets do a quick overview of the default namespaces that are created with most (all?) Kubernetes clusters.
 
-`kubectl create cronjob printer --image=busybox --dry-run=client --schedule="0 0 * * *" -o yaml > cronjob.yaml` The creation of this is the exact same as deployment with the exception that you need to use the `--schedule` flag to pass how often to run the job. As you can see here I have said to run it once a day at midnight.
+We can list them by using the same way we get all cabernets resources `kubectl get namespaces`
 
-If you open this file up you can see that this job will just run a busybox image. There is not too much to this file and looks a lot like a Deployment, It even shares the characteristics of a deployment where it uses replica-sets internally but you don't need to worry about making a spec for it. If you notice, just like a Deployment you give a spec for a container but then the rest is all about the cronjob. Here we really only specify two options, the restartPolicy and the Schedule
+Note here: if you are running on kind or minikube there will/can be a few other namespaces for storage related things. This is fine! don't worry! your cluster could have more depending on where you deployed it!
 
 ```
-apiVersion: batch/v1beta1
-kind: CronJob
+NAME              STATUS   AGE
+default           Active   1d
+kube-node-lease   Active   1d
+kube-public       Active   1d
+kube-system       Active   1d
+```
+
+`default` is well... the default namespace! it's the one that our deployment went in because we did not specify a namespace!
+`kube-node-leases` - you don't really need to worry about this right now... to sum it up it helps manage node leases to improve heartbeat functionality when your cluster scales and starts to become a larger cluster!
+`kube-public` - is used for to enable kubernetes to make some resources visible and readable publicly throughout the entire cluster
+`kube-system` is the namespace where most of the "kubernetes" bits run. when you run a `kubeadm` cluster this is where it is going to run all the little bits of the kubernetes system like the api server.
+
+ok. so every `kubectl` command can be passed a `--namespace=[name]` or `-n [name]` this will run that command in that namespace. lets test this out.
+
+first run `kubectl get pods`
+now run `kubectl get pods -n kube-system`
+now you can see all the pods running in the kube-system! You will notice you where returned pods that would never have been returned if you did not pass it a namespace
+
+Now we want to create a namespace? `kubectl create namesapce nginx` lets go ahead and list the namespaces `kubectl get namespaces`
+cool. we created our namespace.
+
+Lets take a look at that deployment file we created in the last lesson
+
+```
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   creationTimestamp: null
-  name: printer
-spec:
-  jobTemplate:
-    metadata:
-      creationTimestamp: null
-      name: printer
-    spec:
-      template:
-        metadata:
-          creationTimestamp: null
-        spec:
-          containers:
-          - image: busybox
-            name: printer
-            resources: {}
-            command:
-            - /bin/sh
-            - -c
-            - date; echo Hello from the Kubernetes cluster
-          restartPolicy: OnFailure
-      parallelism: 3
-  schedule: 0 0 * * *
-status: {}
+  labels:
+    app: nginx
+  name: nginx
 ```
 
-As we learned in the pods lesson you can override the command the container starts with, lets do that now to have this print! add
-```
-- /bin/sh
-- -c
-- date; echo Hello from the Kubernetes cluster
-```
+We can add a new felid here `namespace: nginx` and then apply this file `kubectl apply -f nginx-deployment.yaml -n nginx` and there you go. an nginx deployment in your new namespace nginx.
 
-now. you could apply this, and feel free too. it will not run until midnight though! so lets make this job run once a minute.
+You can check on it's pod by running `kubectl get pods -n nginx`!
 
-So update the schedule to "* * * * *" this will run it once every minute so that we can see how to get logs, and see what containers are created!
+I have one more secret to show you. you can pass the `-A` to kubectl to run on all namespaces!
 
-You can get the job created for the cronjob by running
-`kubectl get jobs`
+Working a lot in a namespace and want to stop passing it in as a value? `kubectl config set-context -n [nameofnamespase]` will set the default namespace used by your `kubectl` commands! This is super helpful expecially when your team does most of their work in a namespace that is not the defautl namespace! just remember if you want to list things in the default namespace you will need to pass the `-n default` flag!
 
-And then if you want to find the pods that are run by this job then you can run something like:
-
-`kubectl get pods --selector=job-name=[jobname]`
-
-Aaaannd Thats it. really this is just another simple extension over the pod that lets you manage jobs that run to completion and to do it on a schedule if you so want.
+This is pretty much all you need to know about namesapces for now! have fun exploring and using them!

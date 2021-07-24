@@ -1,68 +1,53 @@
-# Pods
+# kubectl - basics
+In the last lesson we created a local cluster; but now we want to interact with it. We want to do things with it. The main tool we are going to be using is kubectl. 
 
-We ran a pod, and a deployment... Now lets understand a little more about them and what they are and what problems they solve.
+There are many tools that you can use, some bringing a graphical interface and others just give you a different way of interacting with clusters or bring the ability to interact with multiple clusters. But as kubectl is the tool used for the kubernetes exams as well as the base for all of these other tools, I'll be sticking to it as the CKA and CKAD exams really test your ability to quickly use the kubectl command line. But not only that it is probably the most prevalent tool out there.
 
-## Pods - high level info
+Ok, so we installed kubectl in the last lesson, if you missed that go back to it and it will help you get that installed.
 
-Pods are a collection of tightly coupled containers, I will start this by saying generally I don't think you should run multiple containers inside the same pod, but sometimes it can be useful and we will cover those in just a little bit. But first lets talk about what a pod is.
+Instead of starting with a few commands that do things. I wanted to start by breaking down the dichotomy of the tool so that going forward you can find your way around it and we are going to cover some of the most basic commands.
 
-First to clarify, most people think of kubernetes as a container scheduler. But that is not quite true. While in the end it might be safe to say that it schedules containers but it's only indirectly though this concept of "the pod". A pod consists of one or many containers all networked together in such a way that they con communicate with the other containers in the pod like they where run on together on a VM, aka localhost. Mind you this means all containers share the same resources given to the pod. For example if you limit the memory and cpu usage of a pod, it's shared between all the containers that run. Not only is the network shared but you can also specify a subset of storage to be shared between the containers in the pod.
+The very first thing you need to know is that kubectl uses a file called the kubeconfig to access your cluster. By default if you are using kind or minikube it will create and put this file in your `~/.kube/config` and kubectl will use this file by default.
 
-While we are going to look into creating a pod by it'self, there are many constructs that should be used instead of a pod directly. Most notably the deployment and replicasets that will be discussed in further detail later.
+This file can actually have more then one cluster in it but that is beyond the scope of this lesson. You can also specify where this file is if it's not in this default location by using the `--kubeconfig` global flag with any and all kubectl commands.
 
-It's important to be familiar with pods as while you almost never want to run and manage them directly it's quite useful for debugging.
+Ok, so lets talk about the 10 most important commands to know about. And then we will talk about some you might have expected to be on this list, and are super useful in the right way, but that way might not be exactly how you expected to use them.
 
-Lets dig into why I say you probably should not be running pods directly. Pods don't heal, scale or schedule. It will run on a Node until it is complete, or is stopped by a user or encounters an error. This pod will not rescedule, or repair itself.
+`get` get and print out the current configuration of a resource, this could be a pod, deployment or even your own custom resource
+`expose` - lets you expose a replication controller, service, deployment or pod as a new service
+`apply` - apply a resource, this can create and update resource based on these files
+`delete` - delete a resource
+`create` - create a resource - mostly used to create templates of files that can later be applied
+`edit` - updated a currently deployed resource
+`proxy` - lets you make calls on your local host like it was running inside the kubernetes cluster, this can be useful for debuging as well as learning and extremely advanced kubernetes api calls.
+`dexcribe` - describes the resource in question giving you information on it's current state
+`explain` - built in documenation of the different kubernetes resources and is really powerful when learning
+`logs` - returns the logs of a container in a pod, remember there can be more than one container
+`debug` - creates a debugging session enabling quick debugging of misbehaving pods.
 
-Pods have five status, Pending, Running, Succeeded, Failed and Unknown.
+Now there are a lot of other commands that you can explore and a lot of options for each of these commands
 
-Pending means that while the cluster has accepted it, its between scheduling and downloading images.
-Running Succeeded and failed all are self explanatory.
-Unknown means that kubernetes can't determine it's status.
+Lets talk about each one of these in a little detail.
 
-## Pods - Doing the thing
+`kubectl get [resource]` this can be used to get the current resource in a cluster and understanding how that object is stored in kubernetes. my favorite flag to use with this command is the `-o` to change the output. for example, run `kubectl get nodes` and `kubectl get nodes -o wide` and see all the other useful data. But it does not stop here, you can have it print out in a machine readable format like json or yaml but you can also use jsonpath here. Play around with it and remember it and the different options to better understand the desired state of your resources.
 
-Ok, so lets play around with some pods.
+`kubectl expose [resource]` While we are going to go into more depth on services and the likes in the future, just know now these is a way to do it viea the command line. For the most this is not that useful except when playing around with your cluster or using the --dry-run=client to generate yaml for you. What a lot of people don't know or realize is that the kubectl command line can create all of these resource files for you, so if you get overwhelmed trying to remember what goes in what type of file, kubectl can usually create the base template for you not only speeding up your work but also ensuring you waste less time on miss typed configuration templates..
 
-We are going to learn how to create, delete and describe a pod. If you remember that kubectl lets you do these commands exact commands for kubernetes resource, and a pod, is a kubernetes resource! So lets give it a try!
+`kubectl apply [-f or -k]` this will let you apply a file or kustomize directory, we are not going to dig into kustomize in this class but it's a very powerful tool for managing configuration. Apply, unlike create or edit can do it all. This is a little more advanced, but it's also much more useful to actually manage your cluster with and lets you make updates based of changes in files that can be stored in a system like git.
 
-first lets check and see if there are any pods running.
+`kubectl create [resource]` while you can create resources in kubernetes this way I don't think that is the most useful use of it. kubectl create's hidden super power is the ability to create base yaml files that you can then update and apply to your cluster. These yaml files are hard sometimes to remember exactly what is in them and how they are formatted. with `kubectl create [resource] name --dry-run=client -o yaml > my-resource.yaml` will create a base resource for you filled out, you can then update the file with anything special and use `kubectl apply -f my-resource.yaml` this not only lets you check the file easily into a repository, but if later you make changes to it and want to update your cluster all you need to do is run `kubectl apply -f my-resource.yaml` again and your cluster will now have the latest configuration.
 
-`kubectl get pods` is all you have to run. Now we will learn about namespaces more but you will see that it does not find any pods in the default namespace. Cool, lets get a pod running.
+`kubectl delete [resource]` is my favorite way to delete things. that is about all the extra information I know to add here.
 
-Lets look at the `kubectl create --help` Interestingly enough you can see the available commands while lists a lot don't include pod. Now this does not mean we can't create a pod using create, we just need a pod spec file, Remember when I was talking about declarative? well all of kubernetes is based around this idea. But we don't have a pod file to pass! lets run one. and then lets create the yaml file.
+`kubectl edit [resource] [name]` is going to let you edit a current resource. I would say use this with care and more of a developer tool, most of the time things in production should be managed by other tools but this is really useful when you are dealing with development clusters and experimenting with configuration.
 
-So first, kubectl has this great command called "run" it's mostly useless in production unless you are fixing a deployment in a bad state. and even then maybe it's not the way to go. But it's great when you are developing. Lets run this Pod!
+`kubectl proxy` is going to let you make calls like you are inside the cluster, this has a lot of uses for debugging as well as learning as you can directly interact with the kubectl API without worrying about dealing with authenticating with the kubeconfig file. Not only this but it lets you debug services and things like that that are only accessible inside the cluster!
 
-`kubectl run nginx --image=nginx`
+`kubectl describe [resource] [name]` lets you describe a resource and is another tool for debugging the current status of objects and is one of the first places I go if I see something amis inside a cluster or deployment. 
 
-So, we are going to run a pod called nginx, and it's going to run the image `nginx:latest`
+`kubectl explain [resource]` is built in documentation. But really really good documentation. The best part is it's from your cluster! meaning it is documentation on the resource for your version of the resource. not only it lets you dig around in it but is documentation right at your finger tips meaning if you run into something and use describe you don't have to go searching on the internet for it. So if you want information on the `pods` manifest file you can run `kubectl explain pods` and get information on it's manifests and is a excellent tool when taking exams if you forget what manifests contain what properties!
 
-Now lets run `kubectl get pods` and you will notice we now have a pod running! But we still don't have the yaml file that represents this. 
+`kubectl logs pod` lets you get logs from a pod. mind you, if your pod has more then a single container, you need to specify what containers you want the logs from with the `-c`
 
-We can ask kubernetes to describe it for us for a start
-`kubectl describe pod nginx` will describe the pod resource nginx, Now this is not quite the way we want it. we want it in yaml. so lets run
-`kubectl describe pod nginx -o yaml` awesome. But in the future we want to create these yaml files without deploying something to our cluster. lets do that right now.
+`kubectl debug` is a really awesome way to debug a container but is deffenetly a more advanced topic. I only mention it here because as soon as you have familiarity with kubectl and kubernetes you should dig into it as it will explained your debugging abilities.
 
-`kubectl run nginx --image=nginx --dry-run=client > nginx-pod.yaml` this will make a file of what we deployed earlier without actually deploying it! The best part, at this point you can edit this file and use it as a starting point and then deploy it using ether `kubectl create -f nginx-pod.yaml` or preferably `kubectl apply -f nginx-pod`!
-
-Ok, enough fun with pods for now. lets delete the pod.
-`kubectl delete pod nginx`
-
-Ok. now up to this point we have only run a single container! lets fix that.
-
-Run `kubectl apply -f https://github/null-channel/classes/kubernetes/intro/part-1/examples/multi-container.yaml`
-
-How many containers does it have? well this is actually quite easy to tell. just run `kubectl get pods` and here in the ready column you can see this pod has three out of three pods running. You can also run the `describe` command as well as pass `-o yaml` or json to see more information on your running pods. But that is not the only information we could want to get about a given pod, We need logs!
-
-Getting logs is easy, there is a command built right into kubectl. now. one might think that you type `kubeclt get logs` but one would be wrong in that thought. I still type it every once in a while. The logs command only works for pods, so we don't have to get logs for a pod. All we do is `kubectl logs [podid/name]` Now if you have been following along are are thinking "but there could be a few containers running in that pod, you would be right. If the pod only has one container as it should, you don't have to pass any arguments. But if it has multiple pods you have to pass the `-c` command with the name of the container you are wanting to get. This being said you can pass `--all-containers=true` and get all the logs for a pod.
-
-You can check out all the flags you can pass here, but the most important ones to know about is the `-p` to get the logs of a previously terminated, `--tail` and `--since`. But i'll let you go look into that further!
-
-One last thing, something that is super useful, you can exec into your pods/containers just like you do with the docker command line. Now I'm not going to cover all the flags or options but understand that this works mostly like you might think it would. And how would that be? well you might want to get "in" to your pod and poke around to see what is going on in this isolated container.
-
-`kubectl exec POD -c [container]` now, there are two main ways to run this, ether a single off command with `--` or you can use the flags `-it` and get an interactive terminal inside your pod! Remember if you have multiple containers you need to pass the `-c` flag. otherwise you don't need too!
-
-That is the fastest crash corse on pods, Dont worry if it's does not all make since just yet. It will. That being said, while we don't manage pods directly, it's the building block of everything we are going to be doing so it's important to understand well!
-
-The next lesson we will learn some of the tech that is built up on top of the pod and enabled easy management of them!

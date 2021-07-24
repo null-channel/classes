@@ -1,38 +1,28 @@
-# What is a namespace
+# Why pods are not the answer
 
-Ok. I bring up namespaces because a lot of the time when you deploy something from a helm chart or the likes it's going to deploy into it's own namespace and it's important to understand how to use them even if you don't actively use them. Namespaces primary use are for environments with larger teams and provide a sort of "soft, trusted multitenancy" they are not the solution to trusted multitenancy but they help with it. So think of a large company with lost of teams that use a single cluster or share lots of clusters. To be honest, if you are running a smaller team there is no need to use namespaces or care about them.
+We just spent a LOT of time with pods. but as I started the last lesson off with, most of the time, we don't deal with bare pods. So what do we use? Deployments. Think of kubernetes objects that can control other kubernetes objects and layer functionallity. Almost like the unix principle of "do one thing and do it well" each of these "things" are able to focus on one thing. So a pod's focus is on the containers, the resources and the general running of a logical set of processes. So it makes since that there woudl be something that is worried about running pods!
 
-Lets sum up what namespaces are at a high level, They are the exact same as namespaces in languages like c#, the linux kernel and others. Namespaces provide a scope for names, meaning that names, like your deployment name `nginx` in the last example needs to be unique WITHIN its namespace. And that happened to be the "default" namespace.
+## Deployments
 
-Ok. lets do a quick overview of the default namespaces that are created with most (all?) Kubernetes clusters.
+Lets talk about Deployments. Now I say deployments but deployments don't do it all by themselves! They get some help. But lets first talk a little at a high level what a deployment is, what problem it solves and then we will get into using one. Once we have used one, we are going to dig into how it works and see who is helping it out!
 
-We can list them by using the same way we get all cabernets resources `kubectl get namespaces`
+Lets start this lesson out by first creating a deployment and learning from using.
 
-Note here: if you are running on kind or minikube there will/can be a few other namespaces for storage related things. This is fine! don't worry! your cluster could have more depending on where you deployed it!
+`kubectl create deployment nginx --image=nginx --dry-run=client -o yaml > nginx-deployment.yaml`
 
-```
-NAME              STATUS   AGE
-default           Active   1d
-kube-node-lease   Active   1d
-kube-public       Active   1d
-kube-system       Active   1d
-```
+This, like the `run` command for pods will create a deployment. Now all you have to do is run `kubect apply -f nginx-deployment.yaml` Or if you did not want the local file you could have left off the `--dry-run=client` and the `> nginx-deployment` part and it would have created it directly on your kubernetes cluster.
 
-`default` is well... the default namespace! it's the one that our deployment went in because we did not specify a namespace!
-`kube-node-leases` - you don't really need to worry about this right now... to sum it up it helps manage node leases to improve heartbeat functionality when your cluster scales and starts to become a larger cluster!
-`kube-public` - is used for to enable kubernetes to make some resources visible and readable publicly throughout the entire cluster
-`kube-system` is the namespace where most of the "kubernetes" bits run. when you run a `kubeadm` cluster this is where it is going to run all the little bits of the kubernetes system like the api server.
+Ok. so now this deployment is running in our cluster. Lets check it out!
 
-ok. so every `kubectl` command can be passed a `--namespace=[name]` or `-n [name]` this will run that command in that namespace. lets test this out.
+So we can use `kubectl get deployments` to list all our deployments in the default namespace, of witch we only have a single deployment as of yet. Lets get that deployment. `kubectl get deployment nginx` will return the new deployment and give some information. Now this is not a lot of information and I hardly ever run a `kubect` command without using the `-o wide` option. But there are a lot of output options, From `wide` to `json, yaml and jasonpath` giving you all the options you need for obtaining just the information you want or all of it.
 
-first run `kubectl get pods`
-now run `kubectl get pods -n kube-system`
-now you can see all the pods running in the kube-system! You will notice you where returned pods that would never have been returned if you did not pass it a namespace
+If you noticed the replicas was set at one. Hmmmm. lets verify how many are running. we can use `kubectl get pods` and you can see only one is listed. We probably want 3 running just to make sure if one crashes we have another and to handle any increase in load. Lets do that now.
 
-Now we want to create a namespace? `kubectl create namesapce nginx` lets go ahead and list the namespaces `kubectl get namespaces`
-cool. we created our namespace.
+`kubectl scale --replicas=3 deployment/nginx` and now if you run `get pods` you can see more pods getting created in the default namespace and we did not have to create or manage any pods by hand, In fact. lets put this to the test, we are going to simulate a failure. We are going to remove a pod that is managed by a deployment. `kubectl delete pod [pod-name]` is all you have to run. so use `kubectl get pods` first to find a name and then go ahead and delete it! so. now we should have 2 pods running right? wait a minute? the deployment has already fixed the issue and we now have 3 pods running still! This is a super useful tool!
 
-Lets take a look at that deployment file we created in the last lesson
+Now, We scaled this by using it's `[type]/[name]` or `deployment/nginx` but you can do this using it's file `-f deployment-nginx`. On top of this scale can be used on pretty much anything that has a replication factor, so think replication controllers or replica sets!
+
+Lets take a quick look over the yaml file that was created for us
 
 ```
 apiVersion: apps/v1
@@ -42,14 +32,31 @@ metadata:
   labels:
     app: nginx
   name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
 ```
 
-We can add a new felid here `namespace: nginx` and then apply this file `kubectl apply -f nginx-deployment.yaml -n nginx` and there you go. an nginx deployment in your new namespace nginx.
+You can see here, we could also just update the number of replicas here and run `kubectl apply -f deployment-nginx.yaml` again to update it! Super cool. Ok. moving on you will notice this has a few `spec` fields, not just one. The first `spec` is the spec for the deployment and the second nested one is the `spec` for the pod, you could add another container here or update this to be a new version of nginx!
 
-You can check on it's pod by running `kubectl get pods -n nginx`!
+You will also see some things around strategy, labels and some other things, these are important, but we will cover those at a later time, other then the label, we will talk about that now. 
 
-I have one more secret to show you. you can pass the `-A` to kubectl to run on all namespaces!
+Every object in kubernetes can be labeled, that being said lots of things use these labels. And we are going to explore one way those are used right now. Know how I said that deployments did not do it alone, they had help? Enter The ReplicaSets. Lets see them. you can run `kubectl get replicasets` or `kubectl get rs` and see the replica set being used for our nginx. Now if we had a lot of deployments and a lot of replicasets, this could be hard to know what one is what and that is where the labels come in. You can use `kubectl get replicasets -l app=nginx` this is just one of the ways that labels can be super helpful! But trust me, thier use is even greater then this as you will see in the future!
 
-Working a lot in a namespace and want to stop passing it in as a value? `kubectl config set-context -n [nameofnamespase]` will set the default namespace used by your `kubectl` commands! This is super helpful expecially when your team does most of their work in a namespace that is not the defautl namespace! just remember if you want to list things in the default namespace you will need to pass the `-n default` flag!
+Ok. I don't want to get to in depth about replicasets but lets just cover it at a high level. You can use Replicasets by themselves but if you use a deployment it owns the replicaset and is the main way of using replicasets. Deployments use them to orchestrate pod creation deletion and updates. This is really cool, so at this point we have deployments using replicasets using pods using containers! Deployments are the main way to deploy your app and most other ways would be considered an "advanced" solution. This is awesome as we now not only know how deployments work at a high level but we also how they work and how they run containers in the end. In the future we will understand more of why each of these in the deployment stack is there but for the most part, each one is worried about a single issue and does that thing well. Pods worry about containers, replicasets manage the number of desired pods and lets you roll out new specs to those pods and deployments bring it all together with declarative updates for the pods and replicasets enabling you to describe a desired state.
 
-This is pretty much all you need to know about namesapces for now! have fun exploring and using them!
+Now, there is a lot more to learn here, but we are going to move on so we can understand more about the ecosystem around deployments to help you manage the deployment of your app!
