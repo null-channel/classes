@@ -7,15 +7,28 @@ metadata:
   name: pod
 spec:
   containers:
-  - image: nginx
-    name: pod
-    resources: {}
-  - image: nginx
-    name: pod3
-    resources: {}
-  - image: nginx
-    name: pod2
-    resources: {}
+  - name: nginx-container
+    image: nginx
+    volumeMounts:
+    - name: shared-data
+      mountPath: /usr/share/nginx/html
+  - name: ubuntu-container
+    image: ubuntu
+    volumeMounts:
+    - name: shared-data
+      mountPath: /pod-data
+    command: ["/bin/sh", "-c", "--"]
+    args: [ "while true; do sleep 300; done;" ]
+  - name: another-container
+    image: ubuntu
+    volumeMounts:
+    - name: shared-data
+      mountPath: /pod-data
+    command: ["/bin/sh", "-c", "--"]
+    args: [ "while true; do sleep 300; done;" ]
   dnsPolicy: ClusterFirst
   restartPolicy: Always
+  volumes:
+  - name: shared-data
+    emptyDir: {}
 status: {}
